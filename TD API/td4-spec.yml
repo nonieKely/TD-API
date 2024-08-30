@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: STD23054 - TD4
+  version: '1.0.2'
+servers:
+  - url: https://localhost.std23054.com
+paths:
+  /customers:
+    get:
+      summary: Récupérer une liste de clients
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: Le numéro de la page à récupérer.
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+          description: Le nombre d'éléments par page.
+      responses:
+        200:
+          description: Liste des clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      summary: Créer une liste de clients
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Le nom du client.
+                  age:
+                    type: integer
+                    description: L'âge du client.
+      responses:
+        200:
+          description: Liste des clients créés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+  /customers/{customerId}/orders:
+    get:
+      summary: Récupérer une liste de commandes pour un client
+      parameters:
+        - in: path
+          name: customerId
+          schema:
+            type: string
+          required: true
+          description: L'identifiant du client.
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: Le numéro de la page à récupérer.
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+          description: Le nombre d'éléments par page.
+      responses:
+        200:
+          description: Liste des commandes pour un client
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Créer une commande pour un client
+      parameters:
+        - in: path
+          name: customerId
+          schema:
+            type: string
+          required: true
+          description: L'identifiant du client.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        200:
+          description: Commande créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /meals:
+    get:
+      summary: Récupérer une liste de plats
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: Le numéro de la page à récupérer.
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+          description: Le nombre d'éléments par page.
+      responses:
+        200:
+          description: Liste des plats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    post:
+      summary: Créer une liste de plats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Meal'
+      responses:
+        200:
+          description: Liste des plats créés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          description: L'identifiant unique du client.
+        name:
+          type: string
+          description: Le nom du client.
+        age:
+          type: integer
+          description: L'âge du client.
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          description: L'identifiant unique de la commande.
+        reference:
+          type: string
+          description: La référence de la commande.
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderedMeal'
+          description: La liste des plats dans la commande.
+        orderDatetime:
+          type: string
+          format: date-time
+          description: La date et l'heure de la commande.
+    OrderedMeal:
+      type: object
+      properties:
+        meal:
+          $ref: '#/components/schemas/Meal'
+        quantity:
+          type: integer
+          description: La quantité du plat dans la commande.
+    Meal:
+      type: object
+      properties:
+        id:
+          type: string
+          description: L'identifiant unique du plat.
+        name:
+          type: string
+          description: Le nom du plat.
+        price:
+          type: number
+          format: decimal
+          description: Le prix du plat.

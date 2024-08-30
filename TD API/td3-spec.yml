@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: STD23054 - TD3
+  version: '1.0.2'
+servers:
+  - url: https://localhost.std23054.com
+paths:
+  /meals:
+    get:
+      summary: Récupérer une liste de plats
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: true
+          description: Le numéro de la page à récupérer.
+        - in: query
+          name: pageSize
+          schema:
+            type: integer
+          required: true
+          description: Le nombre d'éléments par page.
+      responses:
+        200:
+          description: Une liste de plats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    post:
+      summary: Créer une liste de plats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Le nom du plat.
+                  price:
+                    type: number
+                    format: decimal
+                    description: Le prix du plat.
+      responses:
+        200:
+          description: Une liste de plats créés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    put:
+      summary: Mettre à jour une liste de plats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Meal'
+      responses:
+        200:
+          description: Une liste de plats mis à jour
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+    delete:
+      summary: Supprimer des plats par ID
+      parameters:
+        - in: query
+          name: ids
+          schema:
+            type: array
+            items:
+              type: string
+          required: true
+          description: Une liste des IDs des plats à supprimer.
+      responses:
+        200:
+          description: Une liste de plats supprimés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+components:
+  schemas:
+    Meal:
+      type: object
+      properties:
+        id:
+          type: string
+          description: L'identifiant unique du plat (généré automatiquement lors de la création).
+        name:
+          type: string
+          description: Le nom du plat.
+        price:
+          type: number
+          format: decimal
+          description: Le prix du plat.
+    MealIdentifier:
+      type: object
+      properties:
+        id:
+          type: string
+          description: L'identifiant unique du plat.
